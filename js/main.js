@@ -122,6 +122,13 @@ const replyAppend = (replyComment) => {
     return replyCard;
 }
 
+const replyButton = document.getElementsByClassName(".reply-button");
+for(var i = 0; i < replyButton.length; i++) {
+    console.log("Entered loop")
+    replyButton[i].addEventListener("click", console.log("cllicked"))
+// document.querySelector(".comment-section").appendChild(replyingDialog)
+}
+
 
 
 const fetchData = () => {
@@ -137,3 +144,8 @@ const fetchData = () => {
 }
 
 fetchData()
+
+
+
+
+
