@@ -1,5 +1,8 @@
 const userComments = ({id, content, username, png, score, replies, createdAt}) => 
 {
+    const userCommentContainer = document.createElement("div");
+    userCommentContainer.className = "user-comment-container"
+    userCommentContainer.id = id;
 
     const commentDiv = document.createElement('div')
     commentDiv.className = "comment";
@@ -49,7 +52,8 @@ const userComments = ({id, content, username, png, score, replies, createdAt}) =
     commentDiv.appendChild(content1);
     commentDiv.appendChild(commentFooter);
 
-    document.querySelector(".comment-section").appendChild(commentDiv);
+    userCommentContainer.appendChild(commentDiv);
+    document.querySelector(".comment-section").appendChild(userCommentContainer)
 
     const replyContainer = document.createElement("div");
     replyContainer.className = "reply-container"
@@ -59,7 +63,8 @@ const userComments = ({id, content, username, png, score, replies, createdAt}) =
         replyContainer.appendChild(fetchedReply);
     })
 
-    document.querySelector(".comment-section").appendChild(replyContainer)
+    userCommentContainer.appendChild(replyContainer);
+    document.querySelector(".comment-section").appendChild(userCommentContainer)
 }
 
 const replyAppend = (replyComment) => {
@@ -122,16 +127,11 @@ const replyAppend = (replyComment) => {
     return replyCard;
 }
 
-const replyButton = document.getElementsByClassName(".reply-button");
-for(var i = 0; i < replyButton.length; i++) {
-    console.log("Entered loop")
-    replyButton[i].addEventListener("click", console.log("cllicked"))
-// document.querySelector(".comment-section").appendChild(replyingDialog)
-}
 
 
 
-const fetchData = () => {
+
+const fetchData = async () => {
     fetch("../data.json")
         .then((response) => response.json())
         .then(json => json.comments.forEach(element => {
@@ -145,6 +145,27 @@ const fetchData = () => {
 
 fetchData()
 
+setTimeout(
+    () => {
+        const replyButton = document.getElementsByClassName("reply-button");
+        for(i = 0; i < replyButton.length; i++) {
+            console.log("Entered loop")
+            replyButton[i].addEventListener("click", () => {
+                createTextArea(replyButton)
+            } )
+        // document.querySelector(".comment-section").appendChild(replyingDialog)
+        }}
+        
+    ,200)
+
+const createTextArea = (i) => {
+    console.log(i)
+    const textField = document.createElement("textarea");
+    textField.className = "text-field";
+    // document.querySelector(".comment").parentNode.appendChild(textField);
+    const list = document.getElementById("2").getElementsByClassName("reply-container");
+    list.insertBefore(textField, list.children[3])
+}
 
 
 
