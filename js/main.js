@@ -1,4 +1,20 @@
-const userComments = ({id, content, username, png, score, replies, createdAt}) => 
+const fetchData = 
+    fetch("../data.json")
+        .then((response) => response.json())
+        .then(json => { return json})
+
+
+const fetchedData = async () => {
+    const data = await fetchData;
+    console.log(data);
+    data.comments.forEach(element => {
+        userComments(element);
+    })
+}
+
+fetchedData();
+
+const userComments = ({id, content, user : { username, image : {png}}, score, replies, createdAt}) => 
 {
     const userCommentContainer = document.createElement("div");
     userCommentContainer.className = "user-comment-container"
@@ -128,45 +144,76 @@ const replyAppend = (replyComment) => {
 }
 
 
-
-
-
-const fetchData = async () => {
-    fetch("../data.json")
-        .then((response) => response.json())
-        .then(json => json.comments.forEach(element => {
-            console.log(element);
-            const { id, content, score, replies, createdAt, ...otherProps } = element;
-            const { username, image : { png } } = element.user;
-        
-            userComments({id, content, username, png, score, replies, createdAt});
-        }))
-}
-
-fetchData()
-
 setTimeout(
     () => {
         const replyButton = document.getElementsByClassName("reply-button");
         for(i = 0; i < replyButton.length; i++) {
-            console.log("Entered loop")
-            replyButton[i].addEventListener("click", () => {
-                createTextArea(replyButton)
+            // replyButton[i].id = ++i;
+            replyButton[i].addEventListener("click", (event) => {
+                // createTextArea(replyButton[i].id)
+                // console.log(i.path[3])
+                createTextArea(event)
             } )
         // document.querySelector(".comment-section").appendChild(replyingDialog)
         }}
         
     ,200)
 
-const createTextArea = (i) => {
-    console.log(i)
+const createTextArea = async (event) => {
+    const data = await fetchData;
+    const { currentUser: {image : {png}} } = data;
+
+
+    let replyContainer, replyTo;
+    if(event.path.length > 9) {
+        replyContainer = event.path[3];
+        replyTo = event.path[2].childNodes[0].childNodes[1].childNodes[0].data;
+    } else {
+        replyContainer = event.path[3].childNodes[1];
+        replyTo = event.path[2].childNodes[0].childNodes[1].childNodes[0].data;
+    }
+    
+    event.path.length > 9 ? console.log("true") : console.log("false") 
+    console.log(event)
+    console.log("clicked")
+    const textFieldContainer = document.createElement("div");
+    textFieldContainer.className = "replied-comment comment text-field-container";
+
+    const imageAndTextContainer = document.createElement("div");
+    imageAndTextContainer.className = "image-and-text-container";
+
+    const imageField = document.createElement("img");
+    imageField.className = "user-image";
+    imageField.src = `${png}`;
+    imageAndTextContainer.appendChild(imageField);
+
     const textField = document.createElement("textarea");
     textField.className = "text-field";
-    // document.querySelector(".comment").parentNode.appendChild(textField);
-    const list = document.getElementById("2").getElementsByClassName("reply-container");
-    list.insertBefore(textField, list.children[3])
+    textField.textContent = `@${replyTo} `
+    imageAndTextContainer.appendChild(textField);
+
+    textFieldContainer.appendChild(imageAndTextContainer)
+
+    const buttonContainer = document.createElement("div");
+    buttonContainer.className = "button-container"
+
+    const replySubmitButton = document.createElement("button");
+    replySubmitButton.className = "btn reply-submit-button";
+    replySubmitButton.textContent = "Reply";
+    buttonContainer.appendChild(replySubmitButton);
+
+    const cancelButton = document.createElement("button");
+    cancelButton.className = "btn cancel-button"
+    cancelButton.textContent = "Cancel";
+    buttonContainer.appendChild(cancelButton);
+
+    textFieldContainer.appendChild(buttonContainer)
+
+    cancelButton.addEventListener("click", (event) => {
+        const fields = document.getElementsByClassName("text-field-container");
+        fields[fields.length - 1].remove()
+    })
+
+    replyContainer.appendChild(textFieldContainer)
 }
-
-
-
 

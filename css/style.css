@@ -111,3 +111,41 @@ p {
     height: 200px;
     background-color: black;
 }
+
+.text-field-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.text-field {
+    width: 90%;
+    height: 20vw;
+    border-radius: .5em;
+}
+
+.text-field:focus {
+    border-color: 1px solid var(--clr-dark-blue);
+}
+
+.image-and-text-container {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    width: 100%;
+}
+
+.button-container {
+    display: flex;
+    align-self: flex-end;
+    gap: 2em;
+    padding: 1em;
+}
+
+.btn {
+    border: 0;
+    padding: .5em 1.2em;
+    background-color: var(--clr-moderate-blue);
+    color: var(--clr-White);
+    border-radius: .2em;
+}
