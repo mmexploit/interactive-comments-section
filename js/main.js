@@ -1,9 +1,10 @@
+//Fetch the data from the json file
 const fetchData = 
     fetch("../data.json")
         .then((response) => response.json())
         .then(json => { return json})
 
-
+//
 const fetchedData = async () => {
     const data = await fetchData;
     console.log(data);
@@ -109,7 +110,7 @@ const replyAppend = (replyComment) => {
     const createdAtDiv = document.createElement("span");
     createdAtDiv.className = "created-at"
     createdAtDiv.textContent = createdAt;
-    commentHeader.appendChild(createdAtDiv)
+    commentHeader.appendChild(createdAtDiv);
     
 
     const content1 = document.createElement("p");
@@ -150,8 +151,6 @@ setTimeout(
         for(i = 0; i < replyButton.length; i++) {
             // replyButton[i].id = ++i;
             replyButton[i].addEventListener("click", (event) => {
-                // createTextArea(replyButton[i].id)
-                // console.log(i.path[3])
                 createTextArea(event)
             } )
         // document.querySelector(".comment-section").appendChild(replyingDialog)
@@ -159,21 +158,13 @@ setTimeout(
         
     ,200)
 
-const createTextArea = async (event) => {
+const createTextArea = async (event, otherText) => {
     const data = await fetchData;
-    const { currentUser: {image : {png}} } = data;
+    const { currentUser: {image : {png}, username} } = data;
 
-
-    let replyContainer, replyTo;
-    if(event.path.length > 9) {
-        replyContainer = event.path[3];
-        replyTo = event.path[2].childNodes[0].childNodes[1].childNodes[0].data;
-    } else {
-        replyContainer = event.path[3].childNodes[1];
-        replyTo = event.path[2].childNodes[0].childNodes[1].childNodes[0].data;
-    }
-    
-    event.path.length > 9 ? console.log("true") : console.log("false") 
+    //Get the username of the session to which you reply to
+    let replyTo = event.path[2].childNodes[0].childNodes[1].childNodes[0].data;
+     
     console.log(event)
     console.log("clicked")
     const textFieldContainer = document.createElement("div");
@@ -189,7 +180,10 @@ const createTextArea = async (event) => {
 
     const textField = document.createElement("textarea");
     textField.className = "text-field";
-    textField.textContent = `@${replyTo} `
+
+    const replytoTag = document.createElement("span");
+    replytoTag.className = "reply-to-tag";
+    textField.textContent = `@${replyTo} ` + `${otherText ? otherText : ""}`
     imageAndTextContainer.appendChild(textField);
 
     textFieldContainer.appendChild(imageAndTextContainer)
@@ -210,10 +204,122 @@ const createTextArea = async (event) => {
     textFieldContainer.appendChild(buttonContainer)
 
     cancelButton.addEventListener("click", (event) => {
-        const fields = document.getElementsByClassName("text-field-container");
-        fields[fields.length - 1].remove()
+        //Get the closest text-field attached to delete it
+        event.target.closest(".text-field-container").remove()
     })
 
-    replyContainer.appendChild(textFieldContainer)
+    replySubmitButton.addEventListener("click", (event) => {
+        //Get the closest ancestor where the submit reply button is clicked
+        const ancestor = event.target.closest(".text-field-container");
+        //Fish out the closest text field or text area to type the comments
+        const closestTextField = ancestor.getElementsByClassName("text-field");
+        //Get the value or the text inputed in that area
+        const typedText = closestTextField[0].value;
+        appendReply(event, typedText, username, png, replyTo);
+        event.target.closest(".text-field-container").remove()
+    })
+
+    //To get the closest ancestor at which the reply button is clicked 
+    const ancestor = event.target.closest(".user-comment-container");
+    //Get the replies container of that respective div to attach textarea to
+    const closestReplyDiv = ancestor.getElementsByClassName("reply-container")
+    closestReplyDiv[0].appendChild(textFieldContainer)
+}
+
+const appendReply = (event, typedText, username, png, replyTo) => {
+    console.log(event.target.closest(".reply-container"))
+    console.log(username)
+
+
+    const replyCard = document.createElement("div")
+    replyCard.className = "comment replied-comment";
+
+    const commentHeader = document.createElement('div');
+    commentHeader.className = "comment-header";
+    replyCard.appendChild(commentHeader);
+
+    const userImage = document.createElement('img');
+    userImage.className = "user-image";
+    userImage.src = `${png}`
+    commentHeader.appendChild(userImage);
+
+    const userName = document.createElement("span");
+    userName.className = "user-name"
+    userName.textContent = username;
+    commentHeader.appendChild(userName)
+
+    function addZero(i) {
+        if (i < 10) {i = "0" + i}
+        return i;
+      }
+      
+      const d = new Date();
+      let h = addZero(d.getHours());
+      let m = addZero(d.getMinutes());
+      let s = addZero(d.getSeconds());
+      let time = h + ":" + m + ":" + s;
+    
+    const createdAtDiv = document.createElement("span");
+    createdAtDiv.className = "created-at";
+    createdAtDiv.textContent = time;
+    commentHeader.appendChild(createdAtDiv);
+    
+
+    const content1 = document.createElement("p");
+    content1.className = "content";
+
+    //Split the obtained text obtained from the text area
+    const typedTextSplited = typedText.split(" ");
+    //Removed the first element of the spilited text( which is the tag of the user to reply to)
+    typedTextSplited.shift();
+    //Join the content except the tag
+    const contentAfterShift = typedTextSplited.join(" ");
+
+    //Create a new span element to style the username replied to
+    const tag = document.createElement("span");
+    tag.className = "reply-to-tag";
+    tag.textContent = `@${replyTo} `
+    content1.appendChild(tag);
+
+    //Another span element to contain the comment typed by the user
+    const mainContent = document.createElement("span");
+    mainContent.className = "replied-content";
+    mainContent.textContent = contentAfterShift;
+    content1.appendChild(mainContent)
+
+    replyCard.appendChild(content1);
+
+    const commentFooter = document.createElement('div');
+    commentFooter.className = "comment-footer";
+
+    const scoreCounter = document.createElement("span");
+    scoreCounter.className = "score";
+    scoreCounter.textContent = 0;
+    commentFooter.appendChild(scoreCounter);
+
+    const editButton = document.createElement("img");
+    editButton.className = "edit-button";
+    editButton.src = "../images/icon-edit.svg"
+    commentFooter.appendChild(editButton);
+
+    editButton.addEventListener("click", (event) => {
+        createTextArea(event, contentAfterShift);
+        //setTimeout to remove old comment once the edit is executed
+        setTimeout(
+            () => {
+                const closestAncestor = event.target.closest(".comment");
+                closestAncestor.remove();
+                }
+            , 1)
+    })
+
+    replyCard.appendChild(commentHeader);
+    replyCard.appendChild(content1);
+    replyCard.appendChild(commentFooter);
+
+    const ancestorDiv = event.target.closest(".reply-container");
+    ancestorDiv.appendChild(replyCard);
+
+
 }
 

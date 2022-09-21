@@ -70,6 +70,7 @@ p {
 .comment-footer {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .score {
@@ -111,6 +112,16 @@ p {
     height: 200px;
     background-color: black;
 }
+
+.reply-to-tag {
+    color: var(--clr-moderate-blue);
+}
+
+textarea {
+    outline: 1px solid blue;
+    resize: none;
+}
+
 
 .text-field-container {
     display: flex;
