@@ -15,8 +15,11 @@ const fetchedData = async () => {
 
 fetchedData();
 
-const userComments = ({id, content, user : { username, image : {png}}, score, replies, createdAt}) => 
+const userComments = async ({id, content, user : { username, image : {png}}, score, replies, createdAt}) => 
 {
+    const data = await fetchData;
+    const { currentUser : { username : currentUsername }} = data;
+
     const userCommentContainer = document.createElement("div");
     userCommentContainer.className = "user-comment-container"
     userCommentContainer.id = id;
@@ -76,7 +79,7 @@ const userComments = ({id, content, user : { username, image : {png}}, score, re
     replyContainer.className = "reply-container"
 
     replies.forEach(reply => {
-        let fetchedReply = replyAppend(reply);
+        let fetchedReply = replyAppend(reply, currentUsername);
         replyContainer.appendChild(fetchedReply);
     })
 
@@ -84,7 +87,7 @@ const userComments = ({id, content, user : { username, image : {png}}, score, re
     document.querySelector(".comment-section").appendChild(userCommentContainer)
 }
 
-const replyAppend = (replyComment) => {
+const replyAppend = (replyComment, currentUsername) => {
     const { content, createdAt, replyingTo, score, user : {username, image: { png }}, } = replyComment;
     console.log(createdAt)
 
@@ -107,6 +110,11 @@ const replyAppend = (replyComment) => {
     userName.textContent = username;
     commentHeader.appendChild(userName)
 
+    const you = document.createElement("div");
+    currentUsername == username ? you.className = "you" : you.className="invisible";
+    you.textContent = "you";
+    commentHeader.appendChild(you);
+
     const createdAtDiv = document.createElement("span");
     createdAtDiv.className = "created-at"
     createdAtDiv.textContent = createdAt;
@@ -126,14 +134,71 @@ const replyAppend = (replyComment) => {
     scoreCounter.textContent = score;
     commentFooter.appendChild(scoreCounter);
 
+    //Add an edit and delete if the reply coming from the JSON is from the current user
+    const editAndDeleteContainer = document.createElement("div");
+    //Conditionally render the container if the user is the currentUser or admin, else set the display to none
+    (currentUsername == username) ? editAndDeleteContainer.className = "edit-and-delete-container" : editAndDeleteContainer.className = "invisible";
+
+    const deleteButton = document.createElement("div");
+    deleteButton.className = "delete-button"
+
+    const editButton = document.createElement("div");
+    editButton.className = "edit-button"; 
+
+    const deleteSvg = document.createElement("img");
+    deleteSvg.className = "delete-svg";
+    deleteSvg.src = "../images/icon-delete.svg"
+    deleteButton.appendChild(deleteSvg);
+
+    const deleteText = document.createElement("span");
+    deleteText.className = "delete";
+    deleteText.textContent = "Delete"
+    deleteButton.appendChild(deleteText);
+
+    const editSvg = document.createElement("img");
+    editSvg.className = "edit-svg";
+    editSvg.src = "../images/icon-edit.svg"
+    editButton.appendChild(editSvg);
+
+    const edit = document.createElement("span");
+    edit.className = "edit";
+    edit.textContent = "Edit"
+    editButton.appendChild(edit);
+
+    editAndDeleteContainer.appendChild(deleteButton);
+    editAndDeleteContainer.appendChild(editButton)
+
+    commentFooter.appendChild(editAndDeleteContainer)
+
+    editButton.addEventListener("click", (event) => {
+        createTextArea(event, content);
+        //setTimeout to remove old comment once the edit is executed
+        setTimeout(
+            () => {
+                const closestAncestor = event.target.closest(".comment");
+                closestAncestor.remove();
+                }
+            , 1)
+    })
+
+    deleteButton.addEventListener("click", (event) => {
+        setTimeout(
+            () => {
+                const closestAncestor = event.target.closest(".comment");
+                closestAncestor.remove();
+                }
+            , 1)
+    })
+
     const reply = document.createElement("div");
-    reply.className = "reply-button";    
+    currentUsername == username ? reply.className = "reply-button invisible" : reply.className="reply-button"
     reply.textContent =  "Reply";
     const replyArrow = document.createElement("img");
     replyArrow.className = "reply-arrow";
     replyArrow.src = "../images/icon-reply.svg"
     reply.appendChild(replyArrow);
-
+    
+    currentUsername == username ? ( reply.classList.add = "invisible") : console.log("false")
     commentFooter.appendChild(reply);
     replyCard.appendChild(commentHeader);
     replyCard.appendChild(content1);
@@ -163,10 +228,12 @@ const createTextArea = async (event, otherText) => {
     const { currentUser: {image : {png}, username} } = data;
 
     //Get the username of the session to which you reply to
-    let replyTo = event.path[2].childNodes[0].childNodes[1].childNodes[0].data;
-     
-    console.log(event)
-    console.log("clicked")
+    const replyToAncestor = event.target.closest(".comment");
+    const replyToHeader = replyToAncestor.getElementsByClassName("comment-header")[0];
+    const replyToDiv = replyToHeader.getElementsByClassName("user-name")[0];
+    const replyTo = replyToDiv.textContent;
+
+    
     const textFieldContainer = document.createElement("div");
     textFieldContainer.className = "replied-comment comment text-field-container";
 
@@ -297,14 +364,52 @@ const appendReply = (event, typedText, username, png, replyTo) => {
     scoreCounter.textContent = 0;
     commentFooter.appendChild(scoreCounter);
 
-    const editButton = document.createElement("img");
-    editButton.className = "edit-button";
-    editButton.src = "../images/icon-edit.svg"
-    commentFooter.appendChild(editButton);
+    const editAndDeleteContainer = document.createElement("div");
+    editAndDeleteContainer.className = "edit-and-delete-container";
+
+    const deleteButton = document.createElement("div");
+    deleteButton.className = "delete-button"
+
+    const editButton = document.createElement("div");
+    editButton.className = "edit-button"; 
+
+    const deleteSvg = document.createElement("img");
+    deleteSvg.className = "delete-svg";
+    deleteSvg.src = "../images/icon-delete.svg"
+    deleteButton.appendChild(deleteSvg);
+
+    const deleteText = document.createElement("span");
+    deleteText.className = "delete";
+    deleteText.textContent = "Delete"
+    deleteButton.appendChild(deleteText);
+
+    const editSvg = document.createElement("img");
+    editSvg.className = "edit-svg";
+    editSvg.src = "../images/icon-edit.svg"
+    editButton.appendChild(editSvg);
+
+    const edit = document.createElement("span");
+    edit.className = "edit";
+    edit.textContent = "Edit"
+    editButton.appendChild(edit);
+
+    editAndDeleteContainer.appendChild(deleteButton);
+    editAndDeleteContainer.appendChild(editButton)
+
+    commentFooter.appendChild(editAndDeleteContainer)
 
     editButton.addEventListener("click", (event) => {
         createTextArea(event, contentAfterShift);
         //setTimeout to remove old comment once the edit is executed
+        setTimeout(
+            () => {
+                const closestAncestor = event.target.closest(".comment");
+                closestAncestor.remove();
+                }
+            , 1)
+    })
+
+    deleteButton.addEventListener("click", (event) => {
         setTimeout(
             () => {
                 const closestAncestor = event.target.closest(".comment");

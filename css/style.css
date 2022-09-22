@@ -53,6 +53,13 @@ p {
     gap: 1.1em;
 }
 
+.you {
+    padding: 1px 7px;
+    font-size: .875rem;
+    background-color:var(--clr-moderate-blue);
+    color: var(--clr-White);
+}
+
 .user-image {
     width: 44px;
     height: 41px;
@@ -79,10 +86,19 @@ p {
 
 .reply-button {
     display: flex;
+    cursor: pointer;
     flex-direction: row-reverse;
     align-items: center;
     gap: 3px;
     padding: 1em;
+}
+
+.btn:hover {
+    background-color: var(--clr-light-grayish-blue);
+}
+
+.reply-button:hover {
+    color: var(--clr-light-grayish-blue);
 }
 
 .reply-arrow {
@@ -159,4 +175,26 @@ textarea {
     background-color: var(--clr-moderate-blue);
     color: var(--clr-White);
     border-radius: .2em;
+}
+
+.edit-button, 
+.delete-button {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    cursor: pointer;
+}
+
+.edit-svg {
+    width: 14px;
+    height: 14px;
+}
+
+.edit-and-delete-container {
+    display: flex;
+    gap: 2em
+}
+
+.invisible {
+    display: none;
 }
