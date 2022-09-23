@@ -32,6 +32,10 @@ p {
     line-height: 1.3;
 }
 
+button {
+    cursor: pointer;
+}
+
 .comment-section {
     width: 90vw;
     display: flex;
@@ -67,6 +71,10 @@ p {
 
 .user-name {
     font-weight: 700;
+}
+
+.created-at {
+    color: var(--clr-primary);
 }
 
 .content {
@@ -197,4 +205,62 @@ textarea {
 
 .invisible {
     display: none;
+}
+
+.confirm-modal {
+    padding: 1.5em;
+    border: 0;
+    border-radius: .4em;
+}
+
+.confirm-modal::backdrop {
+    background: black;
+    opacity: .6;
+}
+
+h2 {
+    padding-top: 0;
+    margin-top: 0;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.cancel-modal-button {
+    background-color: var(--clr-primary);
+    color: var(--clr-White);
+    padding: 10px 15px;
+    border: 0;
+    border-radius: .4em;
+    font-size: .875rem;
+}
+
+.delete-modal-button {
+    background-color: var(--clr-soft-red);
+    color: var(--clr-White);
+    padding: 10px 15px;
+    border: 0;
+    border-radius: .4em;
+    font-size: .875rem;
+}
+
+@media (min-width: 400px) {
+    .user-comment-container {
+        width: 70%;
+        margin: 0 auto;
+    }
+
+    .replied-comment {
+        width: 90%
+    }
+
+    .text-field {
+        height: 100px;
+    }
+
+    .confirm-modal {
+        width: 25%;
+    }
 }
