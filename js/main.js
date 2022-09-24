@@ -14,6 +14,9 @@ const fetchedData = async () => {
 }
 
 fetchedData();
+let dataa = localStorage.getItem("myComments");
+let parsed = JSON.parse(dataa)
+console.log(parsed)
 
 const userComments = async ({id, content, user : { username, image : {png}}, score, replies, createdAt}) => 
 {
@@ -181,9 +184,27 @@ const replyAppend = (replyComment, currentUsername) => {
             , 1)
     })
 
-    deleteButton.addEventListener("click", (e) => {
-        confirmDelete(e)
-    })
+    deleteButton.addEventListener("click", (event) => {
+            let closestAncestor = event.target.closest(".comment");
+    
+            
+                console.log(event.target.closest(".replied-comment"))
+                        
+                
+                const modal = document.getElementsByClassName("confirm-modal")[0];
+                const cancelButton = document.getElementsByClassName("cancel-modal-button")[0];
+                const deleteButton = document.getElementsByClassName("delete-modal-button")[0];
+                modal.showModal();
+    
+            cancelButton.addEventListener("click", () => {
+                modal.close();
+            })
+            
+            deleteButton.addEventListener("click", () => {
+                closestAncestor.remove();
+                modal.close();
+            })
+        })
 
     const reply = document.createElement("div");
     currentUsername == username ? reply.className = "reply-button invisible" : reply.className="reply-button"
@@ -272,20 +293,26 @@ const createTextArea = async (event, otherText) => {
 
     replySubmitButton.addEventListener("click", (event) => {
         //Get the closest ancestor where the submit reply button is clicked
-        const ancestor = event.target.closest(".text-field-container");
+        let ancestor = event.target.closest(".text-field-container");
         //Fish out the closest text field or text area to type the comments
-        const closestTextField = ancestor.getElementsByClassName("text-field");
+        let closestTextField = ancestor.getElementsByClassName("text-field");
         //Get the value or the text inputed in that area
-        const typedText = closestTextField[0].value;
+        let typedText = closestTextField[0].value;
         appendReply(event, typedText, username, png, replyTo);
-        event.target.closest(".text-field-container").remove()
+        event.target.closest(".text-field-container").remove();
+        var htmlContents = document.documentElement.innerHTML;
+        localStorage.setItem('myComments', JSON.stringify(htmlContents ));
     })
 
     //To get the closest ancestor at which the reply button is clicked 
-    const ancestor = event.target.closest(".user-comment-container");
+    let ancestor = event.target.closest(".user-comment-container");
     //Get the replies container of that respective div to attach textarea to
-    const closestReplyDiv = ancestor.getElementsByClassName("reply-container")
+    let closestReplyDiv = ancestor.getElementsByClassName("reply-container")
     closestReplyDiv[0].appendChild(textFieldContainer)
+    const newTextField = document.getElementsByClassName("text-field")
+    newTextField[newTextField.length - 1].focus();
+    let end = newTextField.selectionEnd;
+    newTextField.selectionEnd= end + 7;
 }
 
 const appendReply = (event, typedText, username, png, replyTo) => {
@@ -393,20 +420,40 @@ const appendReply = (event, typedText, username, png, replyTo) => {
 
     commentFooter.appendChild(editAndDeleteContainer)
 
+    deleteButton.addEventListener("click", (event) => {
+        let closestAncestor = event.target.closest(".comment");
+
+        
+            console.log(event.target.closest(".replied-comment"))
+                    
+            
+            const modal = document.getElementsByClassName("confirm-modal")[0];
+            const cancelButton = document.getElementsByClassName("cancel-modal-button")[0];
+            const deleteButton = document.getElementsByClassName("delete-modal-button")[0];
+            modal.showModal();
+
+        cancelButton.addEventListener("click", () => {
+            modal.close();
+        })
+        
+        deleteButton.addEventListener("click", () => {
+            closestAncestor.remove();
+            modal.close();
+        })
+    })
+
     editButton.addEventListener("click", (event) => {
         createTextArea(event, contentAfterShift);
         //setTimeout to remove old comment once the edit is executed
         setTimeout(
             () => {
-                const closestAncestor = event.target.closest(".comment");
+                let closestAncestor = event.target.closest(".comment");
                 closestAncestor.remove();
                 }
             , 1)
     })
 
-    deleteButton.addEventListener("click", (e) => {
-        confirmDelete(e)
-    })
+    
 
     replyCard.appendChild(commentHeader);
     replyCard.appendChild(content1);
@@ -418,52 +465,3 @@ const appendReply = (event, typedText, username, png, replyTo) => {
 
 }
 
-
-const confirmDelete = async (event) => {
-    const confirmModal = document.createElement("dialog");
-    confirmModal.className = "confirm-modal";
-
-    const confirmDeleteHeader = document.createElement("h2");
-    confirmDeleteHeader.textContent = "Delete comment";
-
-    const confirmDeleteContent = document.createElement("p");
-    confirmDeleteContent.textContent = "Are you sure you want to delete this comment? This will remove the comment and can't be undone"
-
-    const modalButtons = document.createElement("div");
-    modalButtons.className = "modal-buttons";
-    
-    const cancelButton = document.createElement("button");
-    cancelButton.className = "cancel-modal-button"
-    const deleteButton = document.createElement("button");
-    deleteButton.className = "delete-modal-button"
-
-    cancelButton.textContent = "NO, CANCEL";
-    deleteButton.textContent = "YES, DELETE";
-
-    confirmModal.appendChild(confirmDeleteHeader);
-    confirmModal.appendChild(confirmDeleteContent);
-    modalButtons.appendChild(cancelButton);
-    modalButtons.appendChild(deleteButton);
-    confirmModal.appendChild(modalButtons)
-
-    document.body.appendChild(confirmModal);
-
-    const modal = document.getElementsByClassName("confirm-modal")[0]
-    modal.showModal();
-
-    cancelButton.addEventListener("click", () => {
-        modal.close();
-    })
-
-    deleteButton.addEventListener("click", () => {
-        setTimeout(
-            () => {
-                console.log(event.target.closest(".comment"))
-                const closestAncestor = event.target.closest(".comment");
-                closestAncestor.remove()
-                modal.close();
-                }
-            , 0)
-        
-    })
-}
