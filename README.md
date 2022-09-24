@@ -1,106 +1,128 @@
-# Frontend Mentor - Interactive comments section
+# Frontend Mentor - Interactive comments section solution
 
-![Design preview for the Interactive comments section coding challenge](./design/desktop-preview.jpg)
+This is a solution to the [Interactive comments section challenge on Frontend Mentor](https://www.frontendmentor.io/challenges/interactive-comments-section-iG1RugEG9). Frontend Mentor challenges help you improve your coding skills by building realistic projects. 
 
-## Welcome! 👋
+## Table of contents
 
-Thanks for checking out this front-end coding challenge.
+- [Overview](#overview)
+  - [The challenge](#the-challenge)
+  - [Screenshot](#screenshot)
+- [My process](#my-process)
+  - [Built with](#built-with)
+  - [What I learned](#what-i-learned)
+  - [Continued development](#continued-development)
+  - [Useful resources](#useful-resources)
+- [Author](#author)
 
-[Frontend Mentor](https://www.frontendmentor.io) challenges help you improve your coding skills by building realistic projects.
+## Overview
 
-**To do this challenge, you need a strong understanding of HTML, CSS and JavaScript.**
+### The challenge
 
-## The challenge
-
-Your challenge is to build out this interactive comments section and get it looking as close to the design as possible.
-
-You can use any tools you like to help you complete the challenge. So if you've got something you'd like to practice, feel free to give it a go.
-
-We provide the data in a local `data.json` file, so use that to populate the content on the first load. If you want to take it up a notch, feel free to build this as a full-stack CRUD application!
-
-Your users should be able to:
+Users should be able to:
 
 - View the optimal layout for the app depending on their device's screen size
 - See hover states for all interactive elements on the page
 - Create, Read, Update, and Delete comments and replies
-- Upvote and downvote comments
-- **Bonus**: If you're building a purely front-end project, use `localStorage` to save the current state in the browser that persists when the browser is refreshed.
-- **Bonus**: Instead of using the `createdAt` strings from the `data.json` file, try using timestamps and dynamically track the time since the comment or reply was posted.
 
-Want some support on the challenge? [Join our Slack community](https://www.frontendmentor.io/slack) and ask questions in the **#help** channel.
+### Screenshot
 
-### Expected behaviour
+![](./images/mobile-view.jpeg)
+![](./images/desktop-view.jpeg)
+![](./images/confirm-dialog.jpeg)
 
-- First-level comments should be ordered by their score, whereas nested replies are ordered by time added.
-- Replying to a comment adds the new reply to the bottom of the nested replies within that comment.
-- A confirmation modal should pop up before a comment or reply is deleted.
-- Adding a new comment or reply uses the `currentUser` object from within the `data.json` file.
-- You can only edit or delete your own comments and replies.
+## My process
+This is a project I worked on taking the design challenge and to make it as close as possible using only Google to find the pieces
+and solutions whenever I get stuck in a particular area or when I encounter a bug. I went full Vanilla JS for my solution to get pretty
+good at it and appreciate the use of the various frameworks/libraries out there to make working with the DOM much easier. And there
+were no direct resources of people attempting to work on coding this kind of comment section with pure JS so I had to figure out a lot
+of things by myself.
+But going with Vanilla JS was a great choice as it made me fine tune my fundamentals of DOM manipulation implementing the options
+of CRUD- Create, Read, Update and Delete.  
+I also tried to make my code readable and simple by breaking it into small scale functions and even though the nature of Vanilla Js
+is not suited to make reusable components, which is the reason why many frameworks are made, I tried to reuse some components that share 
+similar characteristics to avoid code-repetition. I have also tried to comment what my functions do, even though I still believe I need
+to do more commenting. Overall, I am happy with the journey I came about trying to solve this issue as I learnt a lot of stuff trying to
+code up things and make them work altogether.
 
-## Where to find everything
 
-Your task is to build out the project to the designs inside the `/design` folder. You will find both a mobile and a desktop version of the design. 
+### Built with
 
-The designs are in JPG static format. Using JPGs will mean that you'll need to use your best judgment for styles such as `font-size`, `padding` and `margin`. 
+- Semantic HTML5 markup
+- CSS custom properties
+- Flexbox
+- CSS Grid
+- Mobile-first workflow
 
-If you would like the design files (we provide Sketch & Figma versions) to inspect the design in more detail, you can [subscribe as a PRO member](https://www.frontendmentor.io/pro).
+### What I learned
 
-You will find all the required assets in the `/images` folder. The assets are already optimized.
+This section is to recap over some of my major learnings while working through this project. Writing these out and providing code samples of areas you want to highlight is a great way to reinforce your own knowledge.
 
-There is also a `style-guide.md` file containing the information you'll need, such as color palette and fonts.
+```html
+<h1>Some HTML code I'm proud of</h1>
+<dialog class="confirm-modal">
+    <h2>Delete Comment</h2>
+    <p>Are you sure you want to delete this comment? This will remove the comment and can't be undone</p>
+    <div class="modal-buttons">
+      <button class="cancel-modal-button">NO, CANCEL</button>
+      <button class="delete-modal-button">YES, DELETE</button>
+    </div>
+  </dialog>
+```
+```css
+.proud-of-this-css {
+  display: flex;
+    cursor: pointer;
+    flex-direction: row-reverse;
+    align-items: center;
+    gap: 3px;
+    padding: 1em;
+}
+```
+```js
+const proudOfThisFunc = () => {
+  //Add an edit and delete if the reply coming from the JSON is from the current user
+  const editAndDeleteContainer = document.createElement("div");
+  //Conditionally render the container if the user is the currentUser or admin, else set the display to none
+  (currentUsername == username) ? editAndDeleteContainer.className = "edit-and-delete-container" : editAndDeleteContainer.className = "invisible";
 
-## Building your project
+  replySubmitButton.addEventListener("click", (event) => {
+        //Get the closest ancestor where the submit reply button is clicked
+        let ancestor = event.target.closest(".text-field-container");
+        //Fish out the closest text field or text area to type the comments
+        let closestTextField = ancestor.getElementsByClassName("text-field");
+        //Get the value or the text inputed in that area
+        let typedText = closestTextField[0].value;
+        appendReply(event, typedText, username, png, replyTo);
+        event.target.closest(".text-field-container").remove();
+        var htmlContents = document.documentElement.innerHTML;
+        localStorage.setItem('myComments', JSON.stringify(htmlContents ));
+    })
 
-Feel free to use any workflow that you feel comfortable with. Below is a suggested process, but do not feel like you need to follow these steps:
+    //To get the closest ancestor at which the reply button is clicked 
+    let ancestor = event.target.closest(".user-comment-container");
+    //Get the replies container of that respective div to attach textarea to
+    let closestReplyDiv = ancestor.getElementsByClassName("reply-container")
+    closestReplyDiv[0].appendChild(textFieldContainer)
+    const newTextField = document.getElementsByClassName("text-field")
+    newTextField[newTextField.length - 1].focus();
+}
+```
 
-1. Initialize your project as a public repository on [GitHub](https://github.com/). Creating a repo will make it easier to share your code with the community if you need help. If you're not sure how to do this, [have a read-through of this Try Git resource](https://try.github.io/).
-2. Configure your repository to publish your code to a web address. This will also be useful if you need some help during a challenge as you can share the URL for your project with your repo URL. There are a number of ways to do this, and we provide some recommendations below.
-3. Look through the designs to start planning out how you'll tackle the project. This step is crucial to help you think ahead for CSS classes to create reusable styles.
-4. Before adding any styles, structure your content with HTML. Writing your HTML first can help focus your attention on creating well-structured content.
-5. Write out the base styles for your project, including general content styles, such as `font-family` and `font-size`.
-6. Start adding styles to the top of the page and work down. Only move on to the next section once you're happy you've completed the area you're working on.
+### Continued development
 
-## Deploying your project
+I would like to keep working on this project and implement other feature like Upvote/Downvote using a library available to simplify the task.
+And add some other features like standalone comment replier for the current user, utilize the local storage to attain a session persist and retain the state whenever refreshed. And migrate the data to an external database so that the replied comments and others are stored there and it supports sharing among different users through cloud.
 
-As mentioned above, there are many ways to host your project for free. Our recommend hosts are:
 
-- [GitHub Pages](https://pages.github.com/)
-- [Vercel](https://vercel.com/)
-- [Netlify](https://www.netlify.com/)
+### Useful resources
 
-You can host your site using one of these solutions or any of our other trusted providers. [Read more about our recommended and trusted hosts](https://medium.com/frontend-mentor/frontend-mentor-trusted-hosting-providers-bf000dfebe).
+- [Resource 1](https://developer.mozilla.org/en-US/docs/Web/API/Element/closest) - This helped me use the property closest to be able to grab the
+respective div tags for further editing or deleting of the comment.
+- [Resource 2](https://dev.to/ramonak/javascript-how-to-access-the-return-value-of-a-promise-object-1bck) - This is an amazing article which helped me finally understand how the whole asynchronous nature of JavaScript functions work while they fetch data from a JSON file or external API.
 
-## Create a custom `README.md`
 
-We strongly recommend overwriting this `README.md` with a custom one. We've provided a template inside the [`README-template.md`](./README-template.md) file in this starter code.
+## Author
 
-The template provides a guide for what to add. A custom `README` will help you explain your project and reflect on your learnings. Please feel free to edit our template as much as you like.
+- Website - [Mubarek M.Endrie](http://thatutopiancoder.000webhostapp.com/)
 
-Once you've added your information to the template, delete this file and rename the `README-template.md` file to `README.md`. That will make it show up as your repository's README file.
 
-## Submitting your solution
-
-Submit your solution on the platform for the rest of the community to see. Follow our ["Complete guide to submitting solutions"](https://medium.com/frontend-mentor/a-complete-guide-to-submitting-solutions-on-frontend-mentor-ac6384162248) for tips on how to do this.
-
-Remember, if you're looking for feedback on your solution, be sure to ask questions when submitting it. The more specific and detailed you are with your questions, the higher the chance you'll get valuable feedback from the community.
-
-## Sharing your solution
-
-There are multiple places you can share your solution:
-
-1. Share your solution page in the **#finished-projects** channel of the [Slack community](https://www.frontendmentor.io/slack). 
-2. Tweet [@frontendmentor](https://twitter.com/frontendmentor) and mention **@frontendmentor**, including the repo and live URLs in the tweet. We'd love to take a look at what you've built and help share it around.
-3. Share your solution on other social channels like LinkedIn.
-4. Blog about your experience building your project. Writing about your workflow, technical choices, and talking through your code is a brilliant way to reinforce what you've learned. Great platforms to write on are [dev.to](https://dev.to/), [Hashnode](https://hashnode.com/), and [CodeNewbie](https://community.codenewbie.org/).
-
-We provide templates to help you share your solution once you've submitted it on the platform. Please do edit them and include specific questions when you're looking for feedback. 
-
-The more specific you are with your questions the more likely it is that another member of the community will give you feedback.
-
-## Got feedback for us?
-
-We love receiving feedback! We're always looking to improve our challenges and our platform. So if you have anything you'd like to mention, please email hi[at]frontendmentor[dot]io.
-
-This challenge is completely free. Please share it with anyone who will find it useful for practice.
-
-**Have fun building!** 🚀
