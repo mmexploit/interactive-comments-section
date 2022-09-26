@@ -267,7 +267,7 @@ const createTextArea = async (event, otherText) => {
     const replytoTag = document.createElement("span");
     replytoTag.className = "reply-to-tag";
     textField.textContent = `@${replyTo} ` + `${otherText ? otherText : ""}`
-    imageAndTextContainer.appendChild(textField);
+    imageAndTextContainer.appendChild(textField)
 
     textFieldContainer.appendChild(imageAndTextContainer)
 
