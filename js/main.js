@@ -275,7 +275,7 @@ const createTextArea = async (event, otherText) => {
     buttonContainer.className = "button-container"
 
     const replySubmitButton = document.createElement("button")
-    replySubmitButton.className = "btn reply-submit-button";
+    replySubmitButton.className = "btn reply-submit-button"
     replySubmitButton.textContent = "Reply";
     buttonContainer.appendChild(replySubmitButton);
 
