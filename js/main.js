@@ -279,7 +279,7 @@ const createTextArea = async (event, otherText) => {
     replySubmitButton.textContent = "Reply";
     buttonContainer.appendChild(replySubmitButton);
 
-    const cancelButton = document.createElement("button");
+    const cancelButton = document.createElement("button")
     cancelButton.className = "btn cancel-button"
     cancelButton.textContent = "Cancel";
     buttonContainer.appendChild(cancelButton);
