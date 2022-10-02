@@ -282,7 +282,7 @@ const createTextArea = async (event, otherText) => {
     const cancelButton = document.createElement("button")
     cancelButton.className = "btn cancel-button"
     cancelButton.textContent = "Cancel";
-    buttonContainer.appendChild(cancelButton);
+    buttonContainer.appendChild(cancelButton)
 
     textFieldContainer.appendChild(buttonContainer)
 
