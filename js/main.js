@@ -301,7 +301,7 @@ const createTextArea = async (event, otherText) => {
         appendReply(event, typedText, username, png, replyTo);
         event.target.closest(".text-field-container").remove();
         var htmlContents = document.documentElement.innerHTML;
-        localStorage.setItem('myComments', JSON.stringify(htmlContents ));
+        localStorage.setItem('myComments', JSON.stringify(htmlContents ))
     })
 
     //To get the closest ancestor at which the reply button is clicked 
