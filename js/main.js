@@ -298,7 +298,7 @@ const createTextArea = async (event, otherText) => {
         let closestTextField = ancestor.getElementsByClassName("text-field");
         //Get the value or the text inputed in that area
         let typedText = closestTextField[0].value;
-        appendReply(event, typedText, username, png, replyTo);
+        appendReply(event, typedText, username, png, replyTo)
         event.target.closest(".text-field-container").remove()
         var htmlContents = document.documentElement.innerHTML;
         localStorage.setItem('myComments', JSON.stringify(htmlContents ))
